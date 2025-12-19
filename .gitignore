@@ -1,0 +1,22 @@
+# Python / Virtual Envs
+__pycache__/
+*.pyc
+airflow-env/
+dbt_env/
+venv/
+
+# Airflow
+airflow.db
+logs/
+webserver_config.py
+
+# dbt
+dbt/dbt_packages/
+dbt/**/target/
+dbt/**/logs/
+
+# OS
+.DS_Store
+
+# Secrets
+.env

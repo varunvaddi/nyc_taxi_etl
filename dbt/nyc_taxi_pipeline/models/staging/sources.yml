@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: raw
+    database: NYC_TAXI
+    schema: RAW
+    tables:
+      - name: YELLOW_TAXI
+        identifier: YELLOW_TAXI
+      - name: GREEN_TAXI
+        identifier: GREEN_TAXI
