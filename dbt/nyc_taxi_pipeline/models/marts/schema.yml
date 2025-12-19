@@ -1,0 +1,108 @@
+version: 2
+
+models:
+  - name: fct_trips
+    description: "Grain-level fact table containing all taxi trips with a unique surrogate key."
+    columns:
+      - name: TRIP_ID
+        description: "Primary key (surrogate) generated from pickup/dropoff times, location, and taxi type."
+        tests:
+          - unique
+          - not_null
+
+      - name: VENDOR_ID
+        description: "Identifier for the taxi vendor."
+
+      - name: TAXI_TYPE
+        description: "Type of taxi: yellow or green."
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['yellow', 'green']
+
+  - name: fct_daily_metrics
+    description: "Daily aggregated metrics for taxi operations, categorized by date and taxi type."
+    tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "TOTAL_REVENUE >= 0"
+      # Moved from column-level to model-level to fix Snowflake syntax error
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "TOTAL_TRIPS >= 0"
+    columns:
+      - name: PICKUP_DATE
+        description: "The date on which the trips occurred."
+        tests:
+          - not_null
+
+      - name: TAXI_TYPE
+        description: "Type of taxi: yellow or green."
+        tests:
+          - not_null
+
+      - name: TOTAL_TRIPS
+        description: "Total number of trips completed on this day for this taxi type."
+
+      - name: TOTAL_REVENUE
+        description: "Total amount collected from all trips (sum of total_amount)."
+
+      - name: AVG_TRIP_DURATION
+        description: "The average trip duration in minutes for the day."
+
+      - name: CREDIT_CARD_TRIPS
+        description: "Number of trips paid via credit card (payment_type = 1)."
+
+      - name: CASH_TRIPS
+        description: "Number of trips paid via cash (payment_type = 2)."
+
+      - name: AVG_REVENUE_PER_MILE
+        description: "Average efficiency metric: fare amount divided by distance."
+
+      - name: AVG_TIP_AMOUNT
+        description: "Average tip amount given by passengers."
+  
+  - name: fct_hourly_metrics
+    description: "Hourly aggregated metrics showing peak hours and patterns"
+    columns:
+      - name: pickup_date
+        tests:
+          - not_null
+      - name: pickup_hour
+        tests:
+          - not_null
+      - name: taxi_type
+        tests:
+          - not_null
+      - name: total_trips
+        tests:
+          - not_null
+
+  - name: fct_location_metrics
+    description: "Popular routes and location pair analysis"
+    columns:
+      - name: pickup_location_id
+        tests:
+          - not_null
+      - name: dropoff_location_id
+        tests:
+          - not_null
+      - name: taxi_type
+        tests:
+          - not_null
+      - name: total_trips
+        tests:
+          - not_null
+
+  - name: fct_payment_analysis
+    description: "Payment type analysis with tipping behavior insights"
+    columns:
+      - name: payment_type
+        tests:
+          - not_null
+      - name: taxi_type
+        tests:
+          - not_null
+      - name: total_trips
+        tests:
+          - not_null

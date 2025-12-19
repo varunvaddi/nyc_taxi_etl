@@ -1,0 +1,72 @@
+version: 2
+
+models:
+  - name: stg_green_taxi
+    description: "Staging model for Green Taxi trips."
+    tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "DROPOFF_DATETIME >= PICKUP_DATETIME"
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "PASSENGER_COUNT > 0"
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "TRIP_DISTANCE > 0"
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "FARE_AMOUNT > 0"
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "TOTAL_AMOUNT > 0"
+    columns:
+      - name: VENDOR_ID
+        tests:
+          - not_null
+      - name: PICKUP_DATETIME
+        tests:
+          - not_null
+      - name: DROPOFF_DATETIME
+        tests:
+          - not_null
+      - name: PASSENGER_COUNT
+        tests:
+          - not_null
+      - name: TRIP_DISTANCE
+        tests:
+          - not_null
+      - name: FARE_AMOUNT
+        tests:
+          - not_null
+      - name: TOTAL_AMOUNT
+        tests:
+          - not_null
+
+  - name: stg_yellow_taxi
+    description: "Staging model for Yellow Taxi trips."
+    tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "DROPOFF_DATETIME >= PICKUP_DATETIME"
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "PASSENGER_COUNT > 0"
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "TRIP_DISTANCE > 0"
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "FARE_AMOUNT > 0"
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "TOTAL_AMOUNT > 0"
+    columns:
+      - name: VENDOR_ID
+        tests:
+          - not_null
+      - name: PICKUP_DATETIME
+        tests:
+          - not_null
+      - name: DROPOFF_DATETIME
+        tests:
+          - not_null

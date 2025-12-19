@@ -1,0 +1,73 @@
+version: 2
+
+models:
+  - name: int_all_trips_unified
+    description: "Intermediate model that unifies Yellow and Green taxi data with enriched temporal and categorical metrics."
+    tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "TRIP_DURATION_MINUTES > 0 AND TRIP_DURATION_MINUTES < 1440"
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "PICKUP_HOUR >= 0 AND PICKUP_HOUR <= 23"
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "TRIP_DISTANCE >= 0"
+    columns:
+      - name: VENDOR_ID
+        description: "Primary key identifier for the taxi vendor."
+        tests:
+          - not_null
+
+      - name: PICKUP_DATETIME
+        description: "The date and time when the meter was engaged."
+        tests:
+          - not_null
+
+      - name: DROPOFF_DATETIME
+        description: "The date and time when the meter was disengaged."
+        tests:
+          - not_null
+
+      - name: TRIP_DURATION_MINUTES
+        description: "Calculated duration of the trip in minutes."
+        tests:
+          - not_null
+
+      - name: TRIP_DISTANCE
+        description: "The elapsed trip distance in miles reported by the taximeter."
+        tests:
+          - not_null
+
+      - name: TRIP_DISTANCE_CATEGORY
+        description: "Categorization of trip length: short (<=2mi), medium (<=10mi), or long (>10mi)."
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['short', 'medium', 'long']
+
+      - name: REVENUE_PER_MILE
+        description: "Ratio of fare amount to trip distance."
+
+      - name: REVENUE_PER_MINUTE
+        description: "Ratio of fare amount to trip duration in minutes."
+
+      - name: PICKUP_DATE
+        description: "Date part of the pickup timestamp."
+        tests:
+          - not_null
+
+      - name: PICKUP_HOUR
+        description: "Hour of the day (0-23) when the trip started."
+        tests:
+          - not_null
+
+      - name: PICKUP_DAY_OF_WEEK
+        description: "Day of the week integer (Snowflake default)."
+
+      - name: TAXI_TYPE
+        description: "Indicates if the record originated from Yellow or Green taxi data."
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['yellow', 'green']
