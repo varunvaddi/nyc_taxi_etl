@@ -1,5 +1,15 @@
+{{
+    config(
+        materialized='incremental',
+        unique_key='pickup_datetime'
+    )
+}}
+
 WITH source AS (
     SELECT * FROM {{ source('raw', 'GREEN_TAXI') }}
+    {% if is_incremental() %}
+    WHERE TO_TIMESTAMP("lpep_pickup_datetime" / 1000000) > (SELECT MAX(pickup_datetime) FROM {{ this }})
+    {% endif %}
 ),
 
 cleaned AS (
