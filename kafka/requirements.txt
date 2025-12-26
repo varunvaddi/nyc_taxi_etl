@@ -1,0 +1,5 @@
+confluent-kafka==2.12.2
+kafka-python==2.0.2
+pandas==2.1.4
+pyarrow==14.0.1
+snowflake-connector-python==3.6.0
